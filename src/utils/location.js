@@ -1,9 +1,14 @@
 export function getLocation(cb) {
-  if (navigator.geolocation) {
+  try {
+    if (!navigator.geolocation) {
+      cb('Not supported', null);
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(function (pos, err) {
       cb(err, pos);
     });
-  } else {
-    cb('Not supported', null);
+  } catch (err) {
+    console.log(err);
   }
 }
