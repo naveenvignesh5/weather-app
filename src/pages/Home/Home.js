@@ -1,23 +1,19 @@
-import React from 'react';
-import useSWR from 'swr';
+import React, { useState } from 'react';
+
+import Box from '@material-ui/core/Box';
 
 // components
-import { WEATHER_STACK_API, WEATHER_STACK_API_KEY } from '../../config';
+import { AppBar, WeatherCard } from '../../components';
 
 export function Home() {
-  const { data, error, loading } = useSWR(
-    `${WEATHER_STACK_API}/current?access_key=${WEATHER_STACK_API_KEY}&query=New York`
-  );
-
-  if (loading) return null;
-
-  if (error) return `Error: ${error.message}`;
-
-  console.log(data);
+  const [latlng, setLalLng] = useState({ lat: 13.0827, lng: 80.2707 });
 
   return (
-    <div>
-      <p>Home Screen</p>
-    </div>
+    <>
+      <AppBar />
+      <Box p={3}>
+        <WeatherCard latlng={latlng} />
+      </Box>
+    </>
   );
 }
