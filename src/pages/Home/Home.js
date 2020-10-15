@@ -23,6 +23,8 @@ export function Home() {
         return;
       }
 
+      console.log(data);
+
       setLalLng({
         lat: data.coords.latitude,
         lng: data.coords.longitude,

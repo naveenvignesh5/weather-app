@@ -39,20 +39,20 @@ export function WeatherCard({ latlng, unit }) {
   const classes = useStyles();
 
   const { data, error } = useSWR(
-    `${WEATHER_STACK_API}/onecall?lat=${latlng.lat}&lon=${latlng.lng}&appid=${WEATHER_STACK_API_KEY}&units=${unit}`
+    `${WEATHER_STACK_API}/weather?lat=${latlng.lat}&lon=${latlng.lng}&appid=${WEATHER_STACK_API_KEY}&units=${unit}`
   );
 
   if (!data) return null;
 
   if (error) return `Error: ${error.message}`;
 
-  const localTime = get(data, ['current', 'dt']) * 1000;
+  const localTime = get(data, 'dt') * 1000;
 
-  const forcastData = get(data, 'daily', []);
+  const locationName = get(data, 'name');
 
-  const currentWeather = get(data, ['current', 'weather', '0'], {});
+  const currentWeather = get(data, ['weather', '0'], {});
 
-  const currentTemp = get(data, ['current', 'temp'], 0);
+  const currentTemp = get(data, ['main', 'temp'], 0);
 
   const icon = get(currentWeather, 'icon', '');
 
@@ -61,7 +61,7 @@ export function WeatherCard({ latlng, unit }) {
       <Card className={classes.root}>
         <CardContent>
           <Typography variant="h5" component="h2">
-            {get(data, ['location', 'name'], '')}
+            {locationName}
           </Typography>
           <Box display="flex" flexDirection="row" alignItems="center">
             <Typography variant="h6" color="textSecondary">
@@ -82,7 +82,7 @@ export function WeatherCard({ latlng, unit }) {
       </Card>
       <Card>
         <CardContent>
-          <WeatherForcast unit={unit} forcastData={forcastData} />
+          <WeatherForcast unit={unit} latlng={latlng} />
         </CardContent>
       </Card>
     </>

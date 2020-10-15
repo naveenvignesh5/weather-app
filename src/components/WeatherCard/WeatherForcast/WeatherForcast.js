@@ -1,13 +1,21 @@
 import React from 'react';
 import get from 'lodash/get';
 import moment from 'moment';
+import useSWR from 'swr';
 
+// material ui
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import { WEATHER_UNITS } from '../../../config';
+
+// api
+import {
+  WEATHER_STACK_API,
+  WEATHER_STACK_API_KEY,
+  WEATHER_UNITS,
+} from '../../../config';
 
 const useStyles = makeStyles({
   desc: {
@@ -19,8 +27,18 @@ const useStyles = makeStyles({
   },
 });
 
-export function WeatherForcast({ forcastData, unit = 'standard' }) {
+export function WeatherForcast({ latlng, unit = 'standard' }) {
   const classes = useStyles();
+
+  const { data, error } = useSWR(
+    `${WEATHER_STACK_API}/onecall?lat=${latlng.lat}&lon=${latlng.lng}&appid=${WEATHER_STACK_API_KEY}&units=${unit}`
+  );
+
+  if (!data) return null;
+
+  if (error) return `Error: ${error.message}`;
+
+  const forcastData = get(data, 'daily', []);
 
   return (
     <Grid container>
@@ -52,11 +70,11 @@ export function WeatherForcast({ forcastData, unit = 'standard' }) {
               {desc}
             </Typography>
             <Box display="flex" mt={2}>
-              <Typography classes={{ root: classes.temp }} variant="p">
+              <Typography classes={{ root: classes.temp }} variant="subtitle1">
                 {maxTemp} {WEATHER_UNITS[unit]}
               </Typography>
               <Divider orientation="vertical" flexItem variant="middle" />
-              <Typography classes={{ root: classes.temp }} variant="p">
+              <Typography classes={{ root: classes.temp }} variant="subtitle1">
                 {minTemp} {WEATHER_UNITS[unit]}
               </Typography>
             </Box>
