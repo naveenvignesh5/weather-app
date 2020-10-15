@@ -8,7 +8,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+// import Box from '@material-ui/core/Box';
 
 // components
 import { WeatherForcast } from './WeatherForcast';
@@ -30,8 +31,12 @@ const useStyles = makeStyles({
   },
   weatherIcon: {
     marginLeft: 10,
-    width: 60,
-    height: 60,
+    width: 100,
+    height: 100,
+  },
+  desc: {
+    textTransform: 'capitalize',
+    fontSize: 20,
   },
 });
 
@@ -51,8 +56,11 @@ export function WeatherCard({ latlng, unit }) {
   const locationName = get(data, 'name');
 
   const currentWeather = get(data, ['weather', '0'], {});
+  const desc = get(currentWeather, 'description', '');
 
   const currentTemp = get(data, ['main', 'temp'], 0);
+  const humidity = get(data, ['main', 'humidity'], 0);
+  const pressure = get(data, ['main', 'pressure'], 0);
 
   const icon = get(currentWeather, 'icon', '');
 
@@ -60,24 +68,51 @@ export function WeatherCard({ latlng, unit }) {
     <>
       <Card className={classes.root}>
         <CardContent>
-          <Typography variant="h5" component="h2">
-            {locationName}
-          </Typography>
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Typography variant="h6" color="textSecondary">
-              {currentTemp} {WEATHER_UNITS[unit]}
-            </Typography>
-            {icon && (
-              <img
-                className={classes.weatherIcon}
-                alt="weather_icon"
-                src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
-              />
-            )}
-          </Box>
-          <Typography className={classes.subText} color="textSecondary">
-            {moment(localTime).format('LLL')}
-          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={2} xl={2}>
+              <Typography variant="h5" component="h2">
+                {locationName}
+              </Typography>
+              {icon && (
+                <img
+                  className={classes.weatherIcon}
+                  alt="weather_icon"
+                  src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
+                />
+              )}
+              <Typography
+                classes={{ root: classes.subText }}
+                color="textSecondary"
+              >
+                {moment(localTime).format('LLL')}
+              </Typography>
+              <Typography classes={{ root: classes.desc }} variant="subtitle2">
+                {desc}
+              </Typography>
+            </Grid>
+            <Grid item xs xl>
+              <Typography variant="h6">Temperature</Typography>
+              <Typography
+                gutterBottom
+                variant="subtitle1"
+                color="textSecondary"
+              >
+                {currentTemp} {WEATHER_UNITS[unit]}
+              </Typography>
+              <Typography variant="h6">Humidity</Typography>
+              <Typography
+                gutterBottom
+                variant="subtitle1"
+                color="textSecondary"
+              >
+                {humidity} %
+              </Typography>
+              <Typography variant="h6">Pressure</Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                {pressure} hPa
+              </Typography>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
       <Card>
