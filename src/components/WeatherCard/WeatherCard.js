@@ -14,11 +14,16 @@ import Box from '@material-ui/core/Box';
 import { WeatherForcast } from './WeatherForcast';
 
 // api
-import { WEATHER_STACK_API, WEATHER_STACK_API_KEY } from '../../config';
+import {
+  WEATHER_STACK_API,
+  WEATHER_STACK_API_KEY,
+  WEATHER_UNITS,
+} from '../../config';
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+    marginBottom: 10,
   },
   subText: {
     fontSize: 14,
@@ -30,14 +35,14 @@ const useStyles = makeStyles({
   },
 });
 
-export function WeatherCard({ latlng }) {
+export function WeatherCard({ latlng, unit }) {
   const classes = useStyles();
 
-  const { data, error, loading } = useSWR(
-    `${WEATHER_STACK_API}/onecall?lat=${latlng.lat}&lon=${latlng.lng}&appid=${WEATHER_STACK_API_KEY}`
+  const { data, error } = useSWR(
+    `${WEATHER_STACK_API}/onecall?lat=${latlng.lat}&lon=${latlng.lng}&appid=${WEATHER_STACK_API_KEY}&units=${unit}`
   );
 
-  if (loading) return null;
+  if (!data) return null;
 
   if (error) return `Error: ${error.message}`;
 
@@ -47,24 +52,39 @@ export function WeatherCard({ latlng }) {
 
   const currentWeather = get(data, ['current', 'weather', '0'], {});
 
+  const currentTemp = get(data, ['current', 'temp'], 0);
+
+  const icon = get(currentWeather, 'icon', '');
+
   return (
-    <Card className={classes.root}>
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          {get(data, ['location', 'name'], '')}
-        </Typography>
-        <Box display="flex" flexDirection="row" alignItems="center">
+    <>
+      <Card className={classes.root}>
+        <CardContent>
+          <Typography variant="h5" component="h2">
+            {get(data, ['location', 'name'], '')}
+          </Typography>
+          <Box display="flex" flexDirection="row" alignItems="center">
+            <Typography variant="h6" color="textSecondary">
+              {currentTemp} {WEATHER_UNITS[unit]}
+            </Typography>
+            {icon && (
+              <img
+                className={classes.weatherIcon}
+                alt="weather_icon"
+                src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
+              />
+            )}
+          </Box>
           <Typography className={classes.subText} color="textSecondary">
             {moment(localTime).format('LLL')}
           </Typography>
-          <img
-            className={classes.weatherIcon}
-            alt="weather_icon"  
-            src={`http://openweathermap.org/img/wn/${currentWeather.icon}@2x.png`}
-          />
-        </Box>
-        <WeatherForcast forcastData={forcastData} />
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <WeatherForcast unit={unit} forcastData={forcastData} />
+        </CardContent>
+      </Card>
+    </>
   );
 }

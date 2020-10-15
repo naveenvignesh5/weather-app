@@ -6,6 +6,7 @@ export function getLocation(cb) {
     }
 
     navigator.geolocation.getCurrentPosition(function (pos, err) {
+      console.log(err);
       cb(err, pos);
     });
   } catch (err) {

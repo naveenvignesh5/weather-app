@@ -5,6 +5,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -53,9 +56,16 @@ const useStyles = makeStyles((theme) => ({
       width: '20ch',
     },
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  select: {
+    backgroundColor: '#fff',
+  },
 }));
 
-export function AppBar() {
+export function AppBar({ unit, handleUnitChange }) {
   const classes = useStyles();
 
   return (
@@ -78,6 +88,25 @@ export function AppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
+          <Typography className={classes.title} variant="subtitle1" noWrap>
+            Unit
+          </Typography>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <Select
+              id="demo-simple-select-outlined"
+              defaultValue="standard"
+              value={unit}
+              onChange={handleUnitChange}
+              classes={{
+                root: classes.select,
+                outlined: classes.select,
+              }}
+            >
+              <MenuItem value="standard">Standard</MenuItem>
+              <MenuItem value="metric">Metric</MenuItem>
+              <MenuItem value="imperial">Imperial</MenuItem>
+            </Select>
+          </FormControl>
           <div className={classes.grow} />
         </Toolbar>
       </MuiAppBar>
