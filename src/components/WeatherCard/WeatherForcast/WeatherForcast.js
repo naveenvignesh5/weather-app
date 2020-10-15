@@ -51,6 +51,16 @@ export function WeatherForcast({ latlng, unit = 'standard' }) {
         const minTemp = get(data, ['temp', 'min'], 0);
         const maxTemp = get(data, ['temp', 'max'], 0);
 
+        let day = `${moment(dt).format('dddd')}`;
+
+        if (index === 0) {
+          day = 'Today';
+        }
+
+        if (index === 1) {
+          day = 'Tomorrow';
+        }
+
         return (
           <Grid
             container
@@ -61,7 +71,7 @@ export function WeatherForcast({ latlng, unit = 'standard' }) {
             direction="column"
             alignItems="center"
           >
-            <Typography variant="h5">{moment(dt).format('dddd')}</Typography>
+            <Typography variant="h5">{day}</Typography>
             <img
               alt={desc}
               src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
