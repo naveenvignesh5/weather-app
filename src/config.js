@@ -5,3 +5,7 @@ export const WEATHER_UNITS = {
   metric: '°C',
   imperial: '°F',
 };
+
+export const MAPBOX_API = 'https://api.mapbox.com';
+export const MAPBOX_ACCESS_TOKEN =
+  'pk.eyJ1IjoibmF2ZWVudmlnbmVzaCIsImEiOiJja2dhZzQybzkwNnRjMnFvNGkzb3NqbHFuIn0.B2bWiXlcPGLGJ1H2JfdUAg';

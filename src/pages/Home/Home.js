@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+// material
 import Box from '@material-ui/core/Box';
+
+// lodash
+import get from 'lodash/get';
 
 // components
 import { AppBar, SnackBar, WeatherCard } from '../../components';
@@ -9,7 +13,7 @@ import { AppBar, SnackBar, WeatherCard } from '../../components';
 import { getLocation } from '../../utils';
 
 export function Home() {
-  const [latlng, setLalLng] = useState({ lat: 40.7128, lng: 74.006 });
+  const [latlng, setLalLng] = useState({});
   const [error, setError] = useState('');
   const [unit, setUnit] = useState('standard');
 
@@ -23,8 +27,6 @@ export function Home() {
         return;
       }
 
-      console.log(data);
-
       setLalLng({
         lat: data.coords.latitude,
         lng: data.coords.longitude,
@@ -34,7 +36,13 @@ export function Home() {
 
   return (
     <>
-      <AppBar unit={unit} handleUnitChange={(e) => setUnit(e.target.value)} />
+      <AppBar
+        unit={unit}
+        handleUnitChange={(e) => setUnit(e.target.value)}
+        handleLocationChange={(v) =>
+          setLalLng({ lng: get(v, ['center', 0]), lat: get(v, ['center', 1]) })
+        }
+      />
       <Box p={3}>
         <WeatherCard unit={unit} latlng={latlng} />
       </Box>

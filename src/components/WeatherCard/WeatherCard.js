@@ -9,7 +9,6 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-// import Box from '@material-ui/core/Box';
 
 // components
 import { WeatherForcast } from './WeatherForcast';
@@ -43,9 +42,16 @@ const useStyles = makeStyles({
 export function WeatherCard({ latlng, unit }) {
   const classes = useStyles();
 
+  const lat = get(latlng, 'lat', null);
+  const lng = get(latlng, 'lng', null);
+
   const { data, error } = useSWR(
-    `${WEATHER_STACK_API}/weather?lat=${latlng.lat}&lon=${latlng.lng}&appid=${WEATHER_STACK_API_KEY}&units=${unit}`
+    `${WEATHER_STACK_API}/weather?appid=${WEATHER_STACK_API_KEY}&lat=${lat}&lon=${lng}&units=${unit}`
   );
+
+  if (lat === null || lng === null) {
+    return null;
+  }
 
   if (!data) return null;
 

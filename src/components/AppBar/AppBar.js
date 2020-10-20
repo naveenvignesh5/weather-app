@@ -1,13 +1,16 @@
 import React from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
+
+// material ui
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
+// components
+import { LocationSearch } from '../LocationSearch';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -56,16 +59,25 @@ const useStyles = makeStyles((theme) => ({
       width: '20ch',
     },
   },
+  formControlLabel: {
+    marginLeft: theme.spacing(3),
+    fontWeight: 700,
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
   },
   select: {
     backgroundColor: '#fff',
+    borderRadius: 4,
   },
 }));
 
-export function AppBar({ unit, handleUnitChange }) {
+export function AppBar({ unit, handleUnitChange, handleLocationChange }) {
   const classes = useStyles();
 
   return (
@@ -75,20 +87,11 @@ export function AppBar({ unit, handleUnitChange }) {
           <Typography className={classes.title} variant="h6" noWrap>
             Weather App
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search Location"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-          <Typography className={classes.title} variant="subtitle1" noWrap>
+          <Typography
+            className={classes.formControlLabel}
+            variant="subtitle1"
+            noWrap
+          >
             Unit
           </Typography>
           <FormControl variant="outlined" className={classes.formControl}>
@@ -108,6 +111,22 @@ export function AppBar({ unit, handleUnitChange }) {
             </Select>
           </FormControl>
           <div className={classes.grow} />
+          <LocationSearch handleLocationChange={handleLocationChange} />
+          {/* <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+
+            <InputBase
+              id="autocomplete"
+              placeholder="Search Location"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </div> */}
         </Toolbar>
       </MuiAppBar>
     </div>
